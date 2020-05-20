@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<?php
+session_start();
+if(!$_SESSION['id'] && !$_SESSION['name'] && !$_SESSION['pass']){
+  echo("
+    <script>
+      window.alert('로그인을 해주시고 이용바랍니다.')
+      history.go(-1)
+    </script>
+    ");
+  exit;
+}
+?>
+
+<html>
+<head>
+  <title>dsa</title>
+  <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+
+    <style type="text/css">
+    #marginControl
+    {
+      margin:0px 0px 0px 200px; /* 위쪽 오른쪽 아래쪽 왼쪽 마진속성 한번에 주기 */
+    }
+
+
+.file_input_div
+{
+position: relative;
+overflow: hidden;
+}
+
+.file_input_hidden
+{
+font-size: 45px;
+position: absolute;
+right: 0px;
+top: 0px;
+opacity: 0;
+
+filter: alpha(opacity=0);
+-ms-filter: "alpha(opacity=0)";
+-khtml-opacity: 0;
+-moz-opacity: 0;
+}
+
+
+    </style>
+</head>
+<body class="subpage" id = "marginControl">
+        <header id="header">
+        <div class="inner">
+          <a href="../index.html" class="logo"><strong>Homepage</strong> by 상훈</a>
+          <nav id="nav">
+            <a href="../index.html">홈</a>
+            <a href="notelist.html">게시판</a>
+          </nav>
+          <a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+        </div>
+      </header>
+  <section id="main" class="wrapper">
+    <h3>게시글 쓰기</h3>
+                <form method="post" action="note.php" enctype="multipart/form-data" >
+                    <div class="row uniform">
+                      <div class="6u 12u$(xsmall)">
+                        <input type="text" name="demo-name" id="demo-name" value="" placeholder="게시글 이름" />
+                      </div>
+                      <!-- Break -->
+                      <div class="10u$">
+                        <div class="select-wrapper">
+                          <select name="demo-category" id="demo-category">
+                            <option value="">- 카테고리 -</option>
+                            <option value="게시판">게시판</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="10u$">
+                        <textarea name="demo-message" id="demo-message" placeholder="내용 입력" rows="10"></textarea>
+                      </div>
+                      <!-- Break -->
+                      <div class="10u$">
+                        <ul class="actions">
+                          <li><input type="submit" value="작성하기" /></li>
+                          <li>
+                            <div class="file_input_div">
+                              <input type="button" value="파일 찾기" />
+                              <input type="file" name = "files" class="file_input_hidden" onchange="javascript: document.getElementById('fileName').value = this.value" />
+                            </div>
+                          </li>
+                          <li>
+                              <input type="text" id="fileName" value="" placeholder="파일 위치"/>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+              </form>
+    </section>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/skel.min.js"></script>
+    <script src="../assets/js/util.js"></script>
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

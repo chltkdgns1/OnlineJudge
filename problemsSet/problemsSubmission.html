@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+
+<!--
+< script  src = "lib / codemirror.js" > </ script >
+< link  rel = "stylesheet"  href = "lib / codemirror.css" >
+< script  src = "mode / javascript / javascript.js" > </ 스크립트 >
+-->
+
+<?php
+session_start();
+if(!$_SESSION['id'] && !$_SESSION['name'] && !$_SESSION['pass']){
+  echo("
+    <script>
+      window.alert('로그인을 해주시고 이용바랍니다.')
+      history.go(-1)
+    </script>
+    ");
+  exit;
+}
+
+if(empty($_GET['num'])){
+  echo "error";
+  exit;
+}
+
+$_SESSION['problem_number'] = $_GET['num'];
+
+?>
+
+<html>
+<head>
+  <script src = "../codemirror/lib/codemirror.js"></script>
+  <link  rel = "stylesheet" href = "../codemirror/lib/codemirror.css"/>
+  <link  rel = "stylesheet" href = "../codemirror/theme/dracula.css"/>
+  <script src = "../codemirror/mode/javascript/javascript.js"></script>
+  <script src = "../codemirror/mode/clike/clike.js"></script>
+  <script src="../codemirror/addon/edit/matchbrackets.js"></script>
+  <script src="../codemirror/addon/edit/closebrackets.js"></script>
+
+
+  <title>dsa</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <style type="text/css">
+
+#marginControl
+{
+  margin:0px 0px 0px 200px; /* 위쪽 오른쪽 아래쪽 왼쪽 마진속성 한번에 주기 */
+}
+
+    </style>
+</head>
+<body class="subpage" id = "marginControl">
+        <header id="header">
+        <div class="inner">
+          <a href="../index.html" class="logo"><strong>Homepage</strong> by 상훈</a>
+          <nav id="nav">
+            <a href="../index.html">홈</a>
+            <a href="notelist.html">게시판</a>
+          </nav>
+          <a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+        </div>
+      </header>
+  <section id="main" class="wrapper">
+    <h3>submit</h3>
+                <form method="post" action="Socket.php" enctype="multipart/form-data" >
+                    <div class="row uniform">
+
+                      <div class="10u$">
+                          <textarea id = "codemirror" name="demo-codemirror"  placeholder="소스코드 제출" rows="18"></textarea>
+                          <script>
+                            var editor = CodeMirror.fromTextArea(document.getElementById("codemirror"),{
+                              mode : "text/x-c++src",
+                              theme : "dracula",
+                              matchBrackets: true,
+                              autoCloseBrackets : true,
+                              lineNumbers : true
+                            });
+
+                            var mac = CodeMirror.keyMap.default == CodeMirror.keyMap.macDefault;
+                            CodeMirror.keyMap.default[(mac ? "Cmd" : "Ctrl") + "-Space"] = "autocomplete";
+                          </script>
+                      </div>
+                      <!-- Break -->
+                      <div class="10u$">
+                        <ul class="actions">
+                          <li><input type="submit" value="작성하기" /></li>
+                        </ul>
+                      </div>
+                    </div>
+              </form>
+    </section>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/skel.min.js"></script>
+    <script src="../assets/js/util.js"></script>
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

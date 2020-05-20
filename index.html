@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<!--
+	Projection by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+
+<?php
+session_start();
+?>
+
+<html>
+	<head>
+		<title>저의 홈페이지에 오신 것을 환영합니다.!</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body>
+		<!-- Header -->
+			<header id="header">
+				<div class="inner">
+					<a href="index.html" class="logo"><strong>Homepage</strong> by 2014040010 최상훈</a>
+					<nav id="nav">
+						<?php
+							if(!empty($_SESSION['id']) && !empty($_SESSION['name']) && !empty($_SESSION['pass'])){
+
+								$servername="localhost";
+								$username="root";
+								$dbpasswd="gkftndlTek12!";
+								$dbname="opent";
+								$conn = mysqli_connect($servername,$username,$dbpasswd,$dbname);
+								$id = $_SESSION['id'];
+								$sql = "SELECT id FROM addmin_list WHERE id='$id'";
+								$result=mysqli_query($conn,$sql);
+								$check = mysqli_num_rows($result);
+
+								if($check == true){
+									echo "<a href='index.html'>홈</a>";
+									echo "<a href='logSet/logout.php'>로그아웃</a>";
+									echo "<a href='noticeSet/notelist.html'>게시판</a>";
+									echo "<a href='logSet/data.html'>개인정보</a>";
+									echo "<a href='problemsSet/problemsList.html'>문제</a>";
+									echo "<a href='makeProblemSet/makeProblem.html'>문제 만들기</a>";
+								}
+								else{
+									echo "<a href='index.html'>홈</a>";
+									echo "<a href='logSet/logout.php'>로그아웃</a>";
+									echo "<a href='noticeSet/notelist.html'>게시판</a>";
+									echo "<a href='logSet/data.html'>개인정보</a>";
+									echo "<a href='problemsSet/problemsList.html'>문제</a>";
+								}
+							}
+							else{
+								echo "<a href='index.html'>홈</a>";
+								echo "<a href='logSet/logintemplate.html'>로그인</a>";
+								echo "<a href='logSet/sign.html'>회원가입</a>";
+								echo "<a href='problemsSet/problemsList.html'>문제</a>";
+							}
+
+						?>
+
+					</nav>
+					<a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+				</div>
+			</header>
+
+		<!-- Banner -->
+			<section id="banner">
+				<div class="inner">
+					<header>
+						<h1>Welcome to Homepage</h1>
+					</header>
+
+					<div class="flex ">
+
+						<div>
+							<span class="icon fa-car"></span>
+							<h3>게시판</h3>
+							<p>게시글과 시진을 올릴 수 있습니다.</p>
+						</div>
+					</div>
+
+					<footer>
+						<a href="notelist.html" class="button">Get Started</a>
+					</footer>
+				</div>
+			</section>
+
+		<!-- Three -->
+			<section id="three" class="wrapper align-center">
+				<div class="inner">
+					<div class="flex flex-2">
+						<article>
+							<div class="image round">
+								<img src="images/pic04.jpg" alt="Pic 01" />
+							</div>
+							<header>
+								<h3>Yellow Sky<br /> beautiful Sky</h3>
+							</header>
+							<p>good fill Night Sky<br />
+							<footer>
+								<a href="#" class="button">Page up</a>
+							</footer>
+						</article>
+						<article>
+							<div class="image round">
+								<img src="images/pic08.jpg" alt="Pic 02" />
+							</div>
+							<header>
+								<h3>night<br /> deep night</h3>
+							</header>
+							<p>good fill Night Sky</p>
+							<footer>
+								<a href="#" class="button">Page up</a>
+							</footer>
+						</article>
+					</div>
+				</div>
+			</section>
+
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<?php
+session_start();
+if(!$_SESSION['id'] && !$_SESSION['name'] && !$_SESSION['pass']){
+  echo("
+    <script>
+      window.alert('세션이 만료되었습니다.')
+      history.go(-1)
+    </script>
+    ");
+  exit;
+}
+
+
+$DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];  // 웹 서버의 root 경로
+
+$fp = @fopen("$DOCUMENT_ROOT/pru.txt", "rb");
+
+if(!$fp) {
+  echo "파일 엑세스를 실패하였습니다";
+  exit;
+}
+
+$dbpass = "";
+while(!feof($fp)) {
+  $dbpass = fgets($fp, 999);
+}
+
+$servername="localhost";
+$username="root";
+$dbpasswd=$dbpass;
+$dbname="opent";
+$conn = mysqli_connect($servername,$username,$dbpasswd,$dbname);
+
+$num = $_GET['num'];
+
+$sql = "SELECT * FROM notedata WHERE num = {$num}";
+$result=mysqli_query($conn,$sql);
+
+if(!mysqli_num_rows($result)){
+    echo("
+    <script>
+    window.alert('수정된 게시글입니다.')
+    location.href='notelist.html';
+    </script>
+    ");
+    exit;
+  }
+
+$row = mysqli_fetch_assoc($result);
+
+$_SESSION['num'] = $num;
+?>
+
+<html>
+<head>
+  <title>dsa</title>
+  <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+
+    <style type="text/css">
+
+.file_input_div
+{
+position: relative;
+overflow: hidden;
+}
+
+.file_input_hidden
+{
+font-size: 45px;
+position: absolute;
+right: 0px;
+top: 0px;
+opacity: 0;
+
+filter: alpha(opacity=0);
+-ms-filter: "alpha(opacity=0)";
+-khtml-opacity: 0;
+-moz-opacity: 0;
+}
+
+
+    </style>
+</head>
+<body class="subpage">
+        <header id="header">
+        <div class="inner">
+          <a href="../index.html" class="logo"><strong>Homepage</strong> by 상훈</a>
+          <nav id="nav">
+            <a href="../index.html">홈</a>
+            <a href="elements.html">게시판</a>
+          </nav>
+          <a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+        </div>
+      </header>
+  <section id="main" class="wrapper">
+    <h3>게시글 수정</h3>
+                <form method="post" action="notereplace.php" enctype="multipart/form-data" >
+                    <div class="row uniform">
+                      <div class="6u 12u$(xsmall)">
+                        <?php
+                          echo "<input type='text' name='demo-name' id='demo-name' value= " .$row['notedata']." placeholder='내용 입력'>";
+                        ?>
+
+                      </div>
+                      <!-- Break -->
+                      <div class="12u$">
+                        <div class="select-wrapper">
+                          <select name="demo-category" id="demo-category">
+                            <option value="">- 카테고리 -</option>
+                            <option value="게시판">게시판</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="12u$">
+                         <?php
+                          echo "<textarea name='demo-message' id='demo-message' placeholder='내용 입력' rows='6' > ".$row['contents']."</textarea>"
+                        ?>
+                      </div>
+                      <!-- Break -->
+                      <div class="12u$">
+                        <ul class="actions">
+                          <li><input type="submit" value="작성하기" /></li>
+                          <li>
+                            <div class="file_input_div">
+                              <input type="button" value="파일 찾기" />
+                              <input type="file" name = "files" class="file_input_hidden" onchange="javascript: document.getElementById('fileName').value = this.value" />
+                            </div>
+                          </li>
+                          <li>
+                              <input type="text" id="fileName" value="" placeholder="파일 위치"/>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+              </form>
+    </section>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/skel.min.js"></script>
+    <script src="../assets/js/util.js"></script>
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

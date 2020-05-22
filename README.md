@@ -5,7 +5,8 @@
 </br>
 
 # 구현 환경
-### 
+
+### 윈도우 
 ### apache , php , mysql , javacript , css , c++ , MinGW , redirect
 </br>
 

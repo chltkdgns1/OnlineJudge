@@ -1,25 +1,18 @@
 <?php
 session_start();
-if(!$_SESSION['id'] && !$_SESSION['name'] && !$_SESSION['pass']){
-  echo("
-    <script>
-      window.alert('로그인을 해주시고 이용바랍니다.')
-      history.go(-1)
-    </script>
-    ");
-  exit;
-}
-?>
-
-<?php
 
 $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];  // 웹 서버의 root 경로
 
 $fp = @fopen("$DOCUMENT_ROOT/pru.txt", "rb");
 
 if(!$fp) {
-  echo "파일 엑세스를 실패하였습니다";
-  exit;
+  echo("
+      <script>
+        window.alert('액세스하는데 실패하였습니다.')
+        history.go(-1);
+      </script>
+      ");
+    exit;
 }
 
 $dbpass = "";
@@ -37,6 +30,16 @@ while(!feof($fp)) {
 	$sql = "SELECT * FROM notedata WHERE num ='{$num}'";
 
 	$result=mysqli_query($conn,$sql);
+
+  if($result == false){
+    echo("
+        <script>
+          window.alert('요청에 실패하였습니다.')
+          history.go(-1);
+        </script>
+        ");
+      exit;
+  }
 
 	if(!mysqli_num_rows($result)){
 		echo("
@@ -69,6 +72,7 @@ while(!feof($fp)) {
           <nav id="nav">
             <a href="../index.html">홈</a>
             <a href="notelist.html">게시판</a>
+            <a href="../problemsSet/problemsList.html">문제</a>
           </nav>
           <a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
         </div>

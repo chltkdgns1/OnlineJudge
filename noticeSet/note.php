@@ -26,6 +26,11 @@ if($_FILES['files']['name']){
 	$dest= "./".$_FILES['files']['name'];
 	if(!move_uploaded_file($file_tmp_name, $dest)){
 		die("파일을 지정한 디렉토리에 업로드하는데 실패하였습니다.");
+    echo("
+       <script>
+         window.alert('파일 업로드에 실패하였습니다.')
+       </script>
+       ");
 	}
 }
 
@@ -36,8 +41,13 @@ $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];  // 웹 서버의 root 경로
 $fp = @fopen("$DOCUMENT_ROOT/pru.txt", "rb");
 
 if(!$fp) {
-  echo "파일 엑세스를 실패하였습니다";
-  exit;
+  echo("
+     <script>
+       window.alert('액세스하는데 실패하였습니다.')
+       history.go(-1);
+     </script>
+     ");
+   exit;
 }
 
 $dbpass = "";
@@ -50,13 +60,21 @@ $username="root";
 $dbpasswd=$dbpass;
 $dbname="opent";
 
-
 $arr = array();
 $conn = mysqli_connect($servername,$username,$dbpasswd,$dbname);
 
-
 $sql = "SELECT * FROM notedata";
 $result=mysqli_query($conn,$sql);
+
+if($result == false){
+  echo("
+     <script>
+       window.alert('요청에 실패하였습니다.')
+       history.go(-1);
+     </script>
+     ");
+   exit;
+}
 
 /*
 for($i = 0; $i < 1000; $i++){
@@ -84,6 +102,16 @@ VALUES('{$id}','{$_POST['demo-name']}','{$_POST['demo-message']}','{$timeString}
 ,'{$_FILES['files']['name']}','{$_POST['demo-category']}')";
 
 $result=mysqli_query($conn,$sql);
+
+if($result == false){
+  echo("
+     <script>
+       window.alert('요청에 실패하였습니다.')
+       history.go(-1);
+     </script>
+     ");
+   exit;
+}
 
 echo("
     <script>

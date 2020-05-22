@@ -1,5 +1,7 @@
 <?php
 session_start();
+
+$nums = $_GET['num'];
 ?>
 
 <!DOCTYPE html>
@@ -9,8 +11,74 @@ session_start();
 	<title>채점 현황</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script type="text/javascript">
+			/*
+			var chatManager = new function(){
+ 			var interval	= 500;
+			var num = <?php echo $nums;?>;
+
+ 			this.proc = function(){
+ 					//location.href='scoreStatus.html';
+					document.querySelector("#scoring");
+ 			}
+ 			setInterval(this.proc, interval);
+		}*/
+
+
+		var chatManager = new function(){
+					var interval	= 500;
+					var num = <?php echo $nums;?>;
+					var url = 'scoreStatus.html?num='+num;
+
+					function acyncMovePage(url){
+							 // ajax option
+							 var ajaxOption = {
+											 url : url,
+											 async : true,
+											 type : "POST",
+											 dataType : "html",
+											 cache : false
+							 };
+
+							 $.ajax(ajaxOption).done(function(data){
+									 $('#marginControl').html(data);
+							 });
+					}
+
+					this.proc = function(){
+									acyncMovePage(url);
+					}
+
+					setInterval(this.proc, interval);
+		}
+
+
+
+/*
+		var num = <?php echo $nums;?>;
+		var url = 'scoreStatus.html?num='+num;
+		window.alert(url);
+
+		var sunixi=$('#sunixi').DataTable( {
+			"processing": true,
+			"serverSide": true,
+			"ajax": "scoreSatus.html"
+		} );
+		setInterval(function(){sunixi.ajax.reload();}, 300);
+		*/
+
+		</script>
 		<link rel="stylesheet" href="../assets/css/main.css" />
 		<style type="text/css" >
+
+			#Accept{
+				color : #6BEC62;
+				font-weight : bold;
+			}
+			#WrongAnswer{
+				color : red;
+				font-weight : bold;
+			}
 			#marginControl
 			{
 			  margin:0px 0px 0px 200px; /* 위쪽 오른쪽 아래쪽 왼쪽 마진속성 한번에 주기 */
@@ -22,21 +90,23 @@ session_start();
         <div class="inner">
           <a href="../index.html" class="logo"><strong>Homepage</strong> by 상훈</a>
           <nav id="nav">
-            <a href="../index.html">홈</a>
+						<a href="../index.html">홈</a>
+						<a href="../noticeSet/notelist.html">게시판</a>
+						<a href="problemsList.html">문제</a>
           </nav>
           <a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
         </div>
       </header>
 		<section id="main" class="wrapper">
 			<h2>ProblemsScoringStatus</h2>
-									<div class="10u$">
+									<div class="11u$">
                         				<div class="select-wrapper">
                           					<select name="demo-category" id="demo-category">
                             					<option value="Problems">ScoringStatus</option>
                           					</select>
                         				</div>
                       				</div></br>
-									<div class="10u$">
+									<div class="11u$">
 										<table>
 											<thead>
 												<tr>
@@ -45,6 +115,8 @@ session_start();
 													<th>문제 번호</th>
                           <th>결과</th>
                           <th>시간</th>
+													<th>내 제출한 소스 코드</th>
+													<th>제출한 시간</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -56,8 +128,13 @@ session_start();
                         $fp = @fopen("$DOCUMENT_ROOT/pru.txt", "rb");
 
                         if(!$fp) {
-                          echo "파일 엑세스를 실패하였습니다";
-                          exit;
+													echo("
+														<script>
+															window.alert('액세스에 실패했습니다.')
+															history.go(-1)
+														</script>
+														");
+													exit;
                         }
 
                         $dbpass = "";
@@ -71,8 +148,35 @@ session_start();
                         $dbname="opent";
                         $conn = mysqli_connect($servername,$username,$dbpasswd,$dbname);
 
-                        $sql = "SELECT * FROM scoring_status ORDER BY num DESC";
+
+												$pnum = 0;
+												if(!empty($_GET['num'])){
+													$pnum = $_GET['num'];
+												}
+												else{
+													echo("
+														<script>
+															window.alert('요청에 실패했습니다.')
+															history.go(-1)
+														</script>
+														");
+													exit;
+												}
+
+
+                        $sql = "SELECT * FROM scoring_status WHERE pnum = {$pnum} ORDER BY num DESC";
                         $result= mysqli_query($conn,$sql);
+
+
+												if($result == false){
+													echo("
+														<script>
+															window.alert('요청에 실패했습니다.')
+															history.go(-1)
+														</script>
+														");
+													exit;
+												}
 
                         while($row = mysqli_fetch_assoc($result)){
                             $num = $row['num'];
@@ -80,13 +184,30 @@ session_start();
                             $pnum = $row['pnum'];
                             $results = $row['result'];
                             $timeline = $row['timeline'];
+														$nowtime = $row['nowtime'];
+
+														$style = "";
+
+														if($results == 'Accept')
+											 					$style = 'Accept';
+														else
+															$style = 'WrongAnswer';
+
                               echo "<tr>
                                       <td> ".$num."</td>
-                                      <td> ".$id."</td>
-                                      <td> ".$pnum."</td>
-                                      <td> ".$results."</td>
-                                      <td> ".$timeline."</td>
-                                  </tr>";
+                                      <td> ".$id."</td>";
+
+															echo "<td><a href = 'problemsPrint.html?num=$pnum'>".$pnum."</a></td>";
+
+                              echo "<td id = ".$style."> ".$results."</td>
+                                      <td> ".$timeline."</td>";
+
+															if($id == $_SESSION['id'])
+																echo "<td><a href = 'mySourceCode.html?num=$num&pnum=$pnum'> c++ </a></td>";
+															else
+																echo "<td> c++ </td>";
+															echo "<td> ".$nowtime."</td>";
+                              echo "</tr>";
                           }
                         ?>
 											</tbody>

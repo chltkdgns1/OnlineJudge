@@ -49,8 +49,13 @@ $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];  // 웹 서버의 root 경로
 $fp = @fopen("$DOCUMENT_ROOT/pru.txt", "rb");
 
 if(!$fp) {
-  echo "파일 엑세스를 실패하였습니다";
-  exit;
+	echo("
+		<script>
+		window.alert('액세스 접근에 실패하였습니다.')
+		history.go(-1)
+		</script>
+		");
+	exit;
 }
 
 $dbpass = "";
@@ -69,6 +74,7 @@ $sql="SELECT * FROM user_info WHERE id = '{$_POST['id']}'";
 
 $result=mysqli_query($conn,$sql);
 
+
 if(mysqli_num_rows($result)){
 	echo("
 		<script>
@@ -80,8 +86,21 @@ if(mysqli_num_rows($result)){
 }
 
 $sql = "INSERT INTO user_info (id,pass,name) VALUES ('{$id}','{$passwd}','{$name}')";
+$result = mysqli_query($conn,$sql);
 
-mysqli_query($conn,$sql);
+if($result == false){
+	echo("
+		<script>
+		window.alert('요청에.')
+		history.go(-1)
+		</script>
+		");
+	exit;
+}
+
+$sql = "CREATE TABLE ".$id." ( pnum int not null, primary key(pnum))";
+
+$result = mysqli_query($conn,$sql);
 mysqli_close($conn);
 
 echo("

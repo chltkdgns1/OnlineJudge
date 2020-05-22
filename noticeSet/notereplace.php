@@ -26,6 +26,12 @@ if($_FILES['files']['name']){
 	$dest= "./".$_FILES['files']['name'];
 	if(!move_uploaded_file($file_tmp_name, $dest)){
 		die("파일을 지정한 디렉토리에 업로드하는데 실패하였습니다.");
+    echo("
+       <script>
+         window.alert('파일 업로드에 실패하였습니다.')
+       </script>
+       ");
+     exit;
 	}
 }
 
@@ -34,8 +40,13 @@ $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];  // 웹 서버의 root 경로
 $fp = @fopen("$DOCUMENT_ROOT/pru.txt", "rb");
 
 if(!$fp) {
-  echo "파일 엑세스를 실패하였습니다";
-  exit;
+  echo("
+     <script>
+       window.alert('액세스에 실패하였습니다.')
+       history.go(-1);
+     </script>
+     ");
+   exit;
 }
 
 $dbpass = "";
@@ -56,8 +67,6 @@ $conn = mysqli_connect($servername,$username,$dbpasswd,$dbname);
 date_default_timezone_set('Asia/Seoul');
 $timeString = date('Y-m-d H:i:s');
 
-echo $_POST['demo-name'];
-
 $sql = "UPDATE notedata SET  notedata = '{$_POST['demo-name']}',
 category = '{$_POST['demo-category']}' , contents = '{$_POST['demo-message']}',
 t = '{$timeString}' WHERE num = {$num}";
@@ -67,7 +76,7 @@ $result=mysqli_query($conn,$sql);
 if($reslt){
   echo("
       <script>
-        window.alert('알 수 없는 이유로 실패했습니다.')
+        window.alert('요청이 실패하였습니다.')
         location.href='notelist.html';
       </script>
       ");

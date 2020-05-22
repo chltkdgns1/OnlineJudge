@@ -11,6 +11,9 @@ if(!$_SESSION['id'] && !$_SESSION['name'] && !$_SESSION['passwd']){
 		");
 	exit;
 }
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -21,9 +24,9 @@ if(!$_SESSION['id'] && !$_SESSION['name'] && !$_SESSION['passwd']){
 		html {
 	height: 100%;
 	/*Image only BG fallback*/
-	
+
 	/*background = gradient + image pattern combo*/
-	background: 
+	background:
 		linear-gradient(rgba(196, 102, 0, 0.6), rgba(155, 89, 182, 0.6));
 }
 
@@ -46,7 +49,7 @@ body {
 	box-sizing: border-box;
 	width: 80%;
 	margin: 0 10%;
-	
+
 	/*stacking fieldsets above each other*/
 	position: relative;
 }
@@ -135,7 +138,7 @@ body {
 }
 #progressbar li:first-child:after {
 	/*connector not needed before the first step*/
-	content: none; 
+	content: none;
 }
 /*marking active/completed steps green*/
 /*The number of the step and the connector before it = green*/
@@ -144,7 +147,7 @@ body {
 	color: white;
 }
 
-		
+
 </style>
 </head>
 <body>
@@ -163,6 +166,75 @@ body {
     <?php
     	echo "<p> ID : " .$_SESSION['id'] . "</p>";
     	echo "<p> Name : " .$_SESSION['name'] . "</p>";
+
+			$DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];  // 웹 서버의 root 경로
+
+			$fp = @fopen("$DOCUMENT_ROOT/pru.txt", "rb");
+
+			if(!$fp) {
+			  echo("
+			    <script>
+			      window.alert('액세스 실패하였습니다.')
+			      history.go(-1)
+			    </script>
+			    ");
+			  exit;
+			}
+
+				$dbpass = "";
+				while(!feof($fp)) {
+			  	$dbpass = fgets($fp, 999);
+				}
+
+			  $servername="localhost";
+			  $username="root";
+			  $dbpasswd=$dbpass;
+			  $dbname="opent";
+			  $conn = mysqli_connect($servername,$username,$dbpasswd,$dbname);
+
+				$sql = "select * from user_info where id = '".$_SESSION['id']."'";
+				$result=mysqli_query($conn,$sql);
+
+				if($result == false){
+					echo("
+				    <script>
+				      window.alert('요청에 실패했습니다.')
+				      history.go(-1)
+				    </script>
+				    ");
+				  exit;
+				}
+
+				$row = mysqli_fetch_assoc($result);
+
+				echo "<p> 맞은 문제 : " .$row['ac']. "</p>";
+				echo "<p> 틀른 횟수 : " .$row['wa']. "</p>";
+				echo "<p> 컴파일 에러 : " .$row['compile']. "</p>";
+				echo "<p> 시간 초과 : " .$row['timeout']. "</p>";
+
+				$sql = "select * from " .$row['id'];
+				$result=mysqli_query($conn,$sql);
+
+				if($result == false){
+					echo("
+				    <script>
+				      window.alert('요청에 실패했습니다.')
+				      history.go(-1)
+				    </script>
+				    ");
+				  exit;
+				}
+
+				$row = mysqli_fetch_assoc($result);
+				$getPr  = "";
+				if(!empty($row['pnum']))
+					$getPr = $row['pnum'];
+				else
+					$getPr = 0;
+				while($row = mysqli_fetch_assoc($result)){
+						$getPr = $getPr.' , '.$row['pnum'];
+				}
+				echo "<p> 맞은 문제 : " .$getPr. "</p>";
     ?>
     <button type="button" class="submit action-button" onclick="location.href='datareplace.html'">정보 수정하기</button>
   </fieldset>

@@ -32,8 +32,13 @@ $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];  // 웹 서버의 root 경로
 $fp = @fopen("$DOCUMENT_ROOT/pru.txt", "rb");
 
 if(!$fp) {
-  echo "파일 엑세스를 실패하였습니다";
-  exit;
+	echo("
+		<script>
+		window.alert('액세스 접근에 실패하였습니다.')
+		history.go(-1)
+		</script>
+		");
+	exit;
 }
 
 $dbpass = "";

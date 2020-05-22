@@ -1,12 +1,5 @@
 <!DOCTYPE html>
 
-
-<!--
-< script  src = "lib / codemirror.js" > </ script >
-< link  rel = "stylesheet"  href = "lib / codemirror.css" >
-< script  src = "mode / javascript / javascript.js" > </ 스크립트 >
--->
-
 <?php
 session_start();
 if(!$_SESSION['id'] && !$_SESSION['name'] && !$_SESSION['pass']){
@@ -20,7 +13,12 @@ if(!$_SESSION['id'] && !$_SESSION['name'] && !$_SESSION['pass']){
 }
 
 if(empty($_GET['num'])){
-  echo "error";
+  echo("
+    <script>
+      window.alert('잘못된 접근입니다.')
+      history.go(-1)
+    </script>
+    ");
   exit;
 }
 
@@ -58,7 +56,8 @@ $_SESSION['problem_number'] = $_GET['num'];
           <a href="../index.html" class="logo"><strong>Homepage</strong> by 상훈</a>
           <nav id="nav">
             <a href="../index.html">홈</a>
-            <a href="notelist.html">게시판</a>
+            <a href="../noticeSet/notelist.html">게시판</a>
+            <a href="problemsList.html">문제</a>
           </nav>
           <a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
         </div>

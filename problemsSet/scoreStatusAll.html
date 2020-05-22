@@ -1,0 +1,146 @@
+<?php
+session_start();
+?>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>채점 현황</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<style type="text/css" >
+
+			#Accept{
+				color : #6BEC62;
+				font-weight : bold;
+			}
+			#WrongAnswer{
+				color : red;
+				font-weight : bold;
+			}
+			#marginControl
+			{
+			  margin:0px 0px 0px 200px; /* 위쪽 오른쪽 아래쪽 왼쪽 마진속성 한번에 주기 */
+			}
+		</style>
+</head>
+	<body class="subpage" id = "marginControl">
+		 <header id="header">
+        <div class="inner">
+          <a href="../index.html" class="logo"><strong>Homepage</strong> by 상훈</a>
+          <nav id="nav">
+						<a href="../index.html">홈</a>
+						<a href="../noticeSet/notelist.html">게시판</a>
+						<a href="problemsList.html">문제</a>
+          </nav>
+          <a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+        </div>
+      </header>
+		<section id="main" class="wrapper">
+			<h2>ProblemsScoringStatus</h2>
+									<div class="11u$">
+                        				<div class="select-wrapper">
+                          					<select name="demo-category" id="demo-category">
+                            					<option value="Problems">ScoringStatus</option>
+                          					</select>
+                        				</div>
+                      				</div></br>
+									<div class="11u$">
+										<table>
+											<thead>
+												<tr>
+													<th>채점 번호</th>
+													<th>아이디</th>
+													<th>문제 번호</th>
+                          <th>결과</th>
+                          <th>시간</th>
+													<th>내 제출한 소스 코드</th>
+													<th>제출한 시간</th>
+												</tr>
+											</thead>
+											<tbody>
+                        <?php
+
+                        $DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];  // 웹 서버의 root 경로
+
+                        $fp = @fopen("$DOCUMENT_ROOT/pru.txt", "rb");
+
+                        if(!$fp) {
+													echo("
+														<script>
+															window.alert('액세스에 실패했습니다.')
+															history.go(-1)
+														</script>
+														");
+													exit;
+                        }
+
+                        $dbpass = "";
+                        while(!feof($fp)) {
+                          $dbpass = fgets($fp, 999);
+                        }
+
+                        $servername="localhost";
+                        $username="root";
+                        $dbpasswd=$dbpass;
+                        $dbname="opent";
+                        $conn = mysqli_connect($servername,$username,$dbpasswd,$dbname);
+
+                        $sql = "SELECT * FROM scoring_status ORDER BY num DESC";
+                        $result= mysqli_query($conn,$sql);
+
+												if($result == false){
+													echo("
+														<script>
+															window.alert('요청에 실패했습니다.')
+															history.go(-1)
+														</script>
+														");
+													exit;
+												}
+
+                        while($row = mysqli_fetch_assoc($result)){
+                            $num = $row['num'];
+                            $id = $row['id'];
+                            $pnum = $row['pnum'];
+                            $results = $row['result'];
+                            $timeline = $row['timeline'];
+														$nowtime = $row['nowtime'];
+
+														$style = "";
+
+														if($results == 'Accept')
+											 					$style = 'Accept';
+														else
+															$style = 'WrongAnswer';
+
+                              echo "<tr>
+                                      <td> ".$num."</td>
+                                      <td> ".$id."</td>";
+
+															echo "<td><a href = 'problemsPrint.html?num=$pnum'>".$pnum."</a></td>";
+
+                              echo "<td id = ".$style."> ".$results."</td>
+                                      <td> ".$timeline."</td>";
+
+															if($id == $_SESSION['id'])
+																echo "<td><a href = 'mySourceCode.html?num=$num&pnum=$pnum'> c++ </a></td>";
+															else
+																echo "<td> c++ </td>";
+															echo "<td> ".$nowtime."</td>";
+                              echo "</tr>";
+                          }
+                        ?>
+											</tbody>
+										</table>
+									</div>
+	</section>
+	<script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/skel.min.js"></script>
+    <script src="../assets/js/util.js"></script>
+    <script src="../assets/js/main.js"></script>
+
+</body>
+</html>

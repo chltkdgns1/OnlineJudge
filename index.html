@@ -25,10 +25,30 @@ session_start();
 						<?php
 							if(!empty($_SESSION['id']) && !empty($_SESSION['name']) && !empty($_SESSION['pass'])){
 
+								$DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];  // 웹 서버의 root 경로
+
+								$fp = @fopen("$DOCUMENT_ROOT/pru.txt", "rb");
+
+								if(!$fp) {
+								  echo("
+								    <script>
+								      window.alert('액세스에 실패했습니다.')
+											location.href='index.html'
+								    </script>
+								    ");
+								  exit;
+								}
+
+								$dbpass = "";
+								while(!feof($fp)) {
+								  $dbpass = fgets($fp, 999);
+								}
+
 								$servername="localhost";
 								$username="root";
-								$dbpasswd="gkftndlTek12!";
+								$dbpasswd=$dbpass;
 								$dbname="opent";
+
 								$conn = mysqli_connect($servername,$username,$dbpasswd,$dbname);
 								$id = $_SESSION['id'];
 								$sql = "SELECT id FROM addmin_list WHERE id='$id'";
@@ -42,6 +62,7 @@ session_start();
 									echo "<a href='logSet/data.html'>개인정보</a>";
 									echo "<a href='problemsSet/problemsList.html'>문제</a>";
 									echo "<a href='makeProblemSet/makeProblem.html'>문제 만들기</a>";
+									echo "<a href='problemsSet/scoreStatusAll.html'>채점현황</a>";
 								}
 								else{
 									echo "<a href='index.html'>홈</a>";
@@ -49,6 +70,7 @@ session_start();
 									echo "<a href='noticeSet/notelist.html'>게시판</a>";
 									echo "<a href='logSet/data.html'>개인정보</a>";
 									echo "<a href='problemsSet/problemsList.html'>문제</a>";
+									echo "<a href='problemsSet/scoreStatusAll.html'>채점현황</a>";
 								}
 							}
 							else{
@@ -56,6 +78,7 @@ session_start();
 								echo "<a href='logSet/logintemplate.html'>로그인</a>";
 								echo "<a href='logSet/sign.html'>회원가입</a>";
 								echo "<a href='problemsSet/problemsList.html'>문제</a>";
+								echo "<a href='problemsSet/scoreStatusAll.html'>채점현황</a>";
 							}
 
 						?>
@@ -82,7 +105,7 @@ session_start();
 					</div>
 
 					<footer>
-						<a href="notelist.html" class="button">Get Started</a>
+						<a href="noticeSet/notelist.html" class="button">Get Started</a>
 					</footer>
 				</div>
 			</section>

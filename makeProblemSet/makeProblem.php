@@ -33,13 +33,56 @@ $outputdata = $_POST['demo-outputdata'];
 
 $id = $_SESSION['id'];
 
+
+$DOCUMENT_ROOT = $_SERVER["DOCUMENT_ROOT"];  // 웹 서버의 root 경로
+
+$fp = @fopen("$DOCUMENT_ROOT/pru.txt", "rb");
+
+if(!$fp) {
+  echo("
+     <script>
+       window.alert('액세스에 실패하였습니다.')
+       history.go(-1);
+     </script>
+     ");
+   exit;
+}
+
+$dbpass = "";
+while(!feof($fp)) {
+  $dbpass = fgets($fp, 999);
+}
+
 $servername="localhost";
 $username="root";
-$dbpasswd="gkftndlTek12!";
+$dbpasswd=$dbpass;
 $dbname="opent";
 
 $arr = array();
 $conn = mysqli_connect($servername,$username,$dbpasswd,$dbname);
+
+$sql = "SELECT id FROM addmin_list WHERE id = '{$id}'";
+$result = mysqli_query($conn,$sql);
+
+if($result == false){
+  echo("
+     <script>
+       window.alert('요청에 실패하였습니.')
+       history.go(-1);
+     </script>
+     ");
+   exit;
+}
+
+if(mysqli_num_rows($result) == 0){
+  echo("
+     <script>
+       window.alert('권한이 없습니다.')
+       history.go(-1);
+     </script>
+     ");
+   exit;
+}
 
 
 echo $name;
@@ -55,25 +98,24 @@ $c = 0.0;
 $sql = "INSERT INTO user_info (id,pass,name) VALUES ('{$id}','{$passwd}','{$name}')";
 */
 
-$sql = "INSERT INTO problemsList(name, tag , collectnum , submission , answer)
-VALUES('{$name}','{$category}',{$a},{$b},{$c})";
+$sql = "INSERT INTO problemslist(name, tag , collectnum ,wrongans, submission , answer)
+VALUES('{$name}','{$category}',{$a},{$a},{$b},{$c})";
 
 $result = mysqli_query($conn,$sql);
 
-
-$sql = "SELECT num FROM problemsList WHERE name = '{$name}'";
-$result = mysqli_query($conn,$sql);
-
-if(mysqli_num_rows($result) != 1){
-	echo("
-		<script>
-		window.alert('에러에러 발생')
-		history.go(-1)
-		</script>
-		");
-	#$row=
-	//불러온 계정 정보의 패스워드와 입력된 패스워드가 다르면 경고창, 이전페이지.
+if($result == false){
+  echo("
+     <script>
+       window.alert('요청에 실패했습니다.')
+       history.go(-1);
+     </script>
+     ");
+   exit;
 }
+
+
+$sql = "SELECT num FROM problemslist WHERE name = '{$name}'";
+$result = mysqli_query($conn,$sql);
 
 $row = mysqli_fetch_assoc($result);
 
@@ -81,8 +123,6 @@ $sql="INSERT INTO problems_data (name,maintext,input,output,linknum,inputdata,ou
 VALUES('{$name}','{$contents}','{$input}','{$output}',{$row['num']},'{$inputdata}','{$outputdata}')";
 
 $result=mysqli_query($conn,$sql);
-
-
 
 if($result){
   echo("
@@ -93,13 +133,12 @@ if($result){
       ");
 }
 else{
-echo("
-    <script>
-      window.alert('실패했습니다.')
-      location.href='../index.html';
-    </script>
-    ");
-  }
-  exit;
-
+  echo("
+     <script>
+       window.alert('요청에 실패했습니다.')
+       history.go(-1);
+     </script>
+     ");
+ }
+exit;
 ?>

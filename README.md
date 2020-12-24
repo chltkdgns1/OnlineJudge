@@ -1,3 +1,9 @@
+
+온라인 저지 최종 구현 영상입니다.
+
+https://youtu.be/5hgzfDZ0qsw
+
+
 </br>
 
 # 온라인 저지
